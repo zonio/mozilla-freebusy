@@ -22,24 +22,18 @@ Components.utils.import('resource://calendar/modules/calUtils.jsm');
 Components.utils.import('resource://calendar/modules/calIteratorUtils.jsm');
 Components.utils.import('resource://calendar/modules/calProviderUtils.jsm');
 Components.utils.import('resource://modules/logger.jsm');
-Components.utils.import('resource://modules/utils.jsm');
+Components.utils.import('resource://modules/request.jsm');
 Components.utils.import('resource://modules/object.jsm');
 
 function calEeeFreeBusyProvider() {
   var freeBusyProvider = this;
-  var ICAL_TO_MOZ_TYPES = {
-    'FREE':
-      Components.interfaces.calIFreeBusyInterval.FREE,
-    'BUSY':
+  var JSON_TO_MOZ_TYPES = {
+    'busy':
       Components.interfaces.calIFreeBusyInterval.BUSY,
-    'BUSY-UNAVAILABLE':
-      Components.interfaces.calIFreeBusyInterval.BUSY_UNAVAILABLE,
-    'BUSY-TENTATIVE':
+    'tentative':
       Components.interfaces.calIFreeBusyInterval.BUSY_TENTATIVE,
-    'UNKNOWN':
-      Components.interfaces.calIFreeBusyInterval.UNKNOWN
   };
-  var MOZ_TO_ICAL_TYPES = {};
+  var MOZ_TO_JSON_TYPES = {};
   var logger;
 
   function observe(subject, topic, data) {
@@ -64,94 +58,35 @@ function calEeeFreeBusyProvider() {
   }
 
   function getFreeBusyIntervals(calId, start, end, busyTypes, listener) {
-    var clientListener = function calEee_getFreeBusy_onResult(result,
-                                                              operation) {
-      if (result instanceof cal3eResponse.EeeError) {
-        logger.warn('[' + operation.id() + '] Cannot retrieve free/busy ' +
-                    'as "' + organizer.email + '" for "' + attendee + '" ' +
-                    'because of error ' +
-                    result.constructor.name + '(' + result.errorCode + ')');
-        throw Components.Exception();
-      } else if (result instanceof cal3eResponse.TransportError) {
-        logger.warn('[' + operation.id() + '] Cannot retrieve free/busy ' +
-                    'as "' + organizer.email + '" for "' + attendee + '" ' +
-                    'because of error ' +
-                    result.constructor.name + '(' + result.errorCode + ')');
-        listener.onResult(null, null);
+    var clientListener = function calEee_getFreeBusy_onResult(result) {
+      if (result.isError) {
+        logger.warn('Cannot retrieve free/busy for "' + attendee + '".'  +
+                    result.errorMessage);
         return;
       }
 
-      logger.info('[' + operation.id() + '] Free/busy received');
-
-      rawItems =
-        'BEGIN:VCALENDAR\nVERSION:2.0\n' +
-        'PRODID:-//Zonio//mozilla-3e//EN\n' +
-        result.data +
-        'END:VCALENDAR';
+      logger.info('Free/busy received');
 
       var intervalsToReturn = [];
 
-      //TODO wrap try over possible exception throwers only
       try {
-        for (let component in
-             cal.ical.calendarComponentIterator(
-               cal.getIcsService().parseICS(rawItems, null))) {
-          let interval;
-
-          if (component.startTime &&
-              (start.compare(component.startTime) == -1)) {
-            intervalsToReturn.push(new cal.FreeBusyInterval(
-              calId,
-              Components.interfaces.calIFreeBusyInterval.UNKNOWN,
-              start,
-              component.startTime
-            ));
-          }
-
-          if (component.endTime &&
-              (end.compare(component.endTime) == 1)) {
-            intervalsToReturn.push(new cal.FreeBusyInterval(
-              calId,
-              Components.interfaces.calIFreeBusyInterval.UNKNOWN,
-              component.endTime,
-              end
-            ));
-          }
-
-          for (let property in
-               cal.ical.propertyIterator(component, 'FREEBUSY')) {
-            intervalsToReturn.push(
-              buildFreeBusyIntervalFromProperty(calId, property)
-            );
-          }
-        }
+        intervalsToReturn = deserialize(calId, result.data);
       } catch (e) {
-        logger.error('[' + operation.id() + '] Invalid free/busy ' +
-                     'as "' + organizer.email + '" for "' + attendee + '" ' +
-                     'because of ' + e);
+        logger.error('Invalid free/busy for "' + attendee + '". ' + e);
       }
 
-      logger.info('[' + operation.id() + '] Free/busy parsed');
-      logger.debug('[' + operation.id() + '] ' + intervalsToReturn.length +
-                   ' free/busy intervals parsed');
+      logger.info('Free/busy parsed');
+      logger.debug(intervalsToReturn.length + ' free/busy intervals parsed');
       intervalsToReturn.forEach(function(interval, idx) {
-        logger.debug('[' + operation.id() + '] Interval #' + idx + ': ' +
+        logger.debug('Interval #' + idx + ': ' +
                      interval.calId +
-                     ' is ' + MOZ_TO_ICAL_TYPES[interval.freeBusyType] +
-                     ' from ' +
-                     cal3eUtils.calDateTimeToIsoDate(interval.interval.start) +
-                     ' to ' +
-                     cal3eUtils.calDateTimeToIsoDate(interval.interval.end));
+                     ' is ' + MOZ_TO_JSON_TYPES[interval.freeBusyType] +
+                     ' from ' + cal.toRFC3339(interval.interval.start) +
+                     ' to ' + cal.toRFC3339(interval.interval.end));
       });
 
       listener.onResult(null, intervalsToReturn);
     };
-
-    var organizer = getEeeOrganizer() || getCalendarSubscriber();
-    if (!organizer) {
-      listener.onResult(null, null);
-      return;
-    }
 
     var attendee = parseAttendeeEmail(calId);
     if (!attendee) {
@@ -159,46 +94,11 @@ function calEeeFreeBusyProvider() {
       return;
     }
 
-    var operation = cal3eRequest.Client.getInstance().freeBusy(
-      organizer,
-      clientListener,
-      attendee,
-      start.nativeTime,
-      end.nativeTime,
-      cal.calendarDefaultTimezone().icalComponent.serializeToICS()
-    );
-    logger.info('[' + operation.id() + '] Retriving free/busy ' +
-                'as "' + organizer.email + '" for "' + attendee + '"');
+    Request.getFreebusy(attendee, start, end, clientListener)
+
+    logger.info('Retriving free/busy for "' + attendee + '".');
   }
   cal3eObject.exportMethod(this, getFreeBusyIntervals);
-
-  function getEeeOrganizer() {
-    var organizerEmail = parseAttendeeEmail(
-      Services.wm.getMostRecentWindow('Calendar:EventDialog:Attendees')
-        .document.getElementById('attendees-list')
-        .organizer.id
-    );
-
-    var identities = cal3eIdentity.Collection()
-      .getEnabled()
-      .findByEmail(organizerEmail);
-
-    return identities.length > 0 ? identities[0] : null;
-  }
-
-  function getCalendarSubscriber() {
-    var calendar = Services.wm.getMostRecentWindow('Calendar:EventDialog')
-      .getCurrentCalendar();
-    var key = calendar.getProperty('imip.identity.key');
-
-    var identities = cal3eIdentity.Collection().getEnabled();
-    for (var i = 0; i < identities.length; i++) {
-      if (identities[i].key === key) {
-        return identities[i];
-      }
-    }
-    return null;
-  }
 
   function parseAttendeeEmail(calId) {
     var parts = calId.split(':', 2);
@@ -206,30 +106,41 @@ function calEeeFreeBusyProvider() {
     return parts[0].toLowerCase() === 'mailto' ? parts[1] : null;
   }
 
-  function buildFreeBusyIntervalFromProperty(calId, property) {
-    var period = Components.classes['@mozilla.org/calendar/period;1']
-      .createInstance(Components.interfaces.calIPeriod);
-    period.icalString = property.value;
+  function deserialize(calId, json) {
+    var intervals = [];
 
+    var p = JSON.parse(json);
+
+    JSON.parse(json).forEach(function(interval) {
+      intervals.push(new cal.FreeBusyInterval(
+        calId,
+        JSON_TO_MOZ_TYPES[interval['type']],
+        cal.fromRFC3339(interval['start']),
+        cal.fromRFC3339(interval['end'])
+      ))
+    });
+
+    return intervals;
+  }
+
+  function buildFreeBusyInterval(calId, value) {
     return new cal.FreeBusyInterval(
       calId,
-      property.getParameter('FBTYPE') ?
-        ICAL_TO_MOZ_TYPES[property.getParameter('FBTYPE')] :
-        Components.interfaces.calIFreeBusyInterval.BUSY,
-      period.start,
-      period.end
+      JSON_TO_MOZ_TYPES[value['type']],
+      cal.fromRFC3339(value['start']),
+      cal.fromRFC3339(value['end'])
     );
   }
 
   function init() {
-    for (let icalType in ICAL_TO_MOZ_TYPES) {
-      if (!ICAL_TO_MOZ_TYPES.hasOwnProperty(icalType)) {
+    for (let icalType in JSON_TO_MOZ_TYPES) {
+      if (!JSON_TO_MOZ_TYPES.hasOwnProperty(icalType)) {
         continue;
       }
-      MOZ_TO_ICAL_TYPES[ICAL_TO_MOZ_TYPES[icalType]] = icalType;
+      MOZ_TO_JSON_TYPES[JSON_TO_MOZ_TYPES[icalType]] = icalType;
     }
 
-    logger = cal3eLogger.create('extensions.calendar3e.log.freeBusy');
+    logger = cal3eLogger.create('extensions.zonio.freebusy.log');
   }
 
   init();

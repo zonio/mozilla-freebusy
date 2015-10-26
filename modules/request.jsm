@@ -1,6 +1,6 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * 3e Calendar
- * Copyright © 2012 - 2013  Zonio s.r.o.
+ * Copyright © 2013  Zonio s.r.o.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,25 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-pref('extensions.zonio.freebusy.log.logDevice', 'console');
-pref('extensions.zonio.freebusy.log.severity', 'warn');
-pref('extensions.zonio.freebusy.log.name', 'zonio.freebusy');
+Components.utils.import('resource://gre/modules/Services.jsm');
+
+function getFreebusy(attendee, start, end, listener) {
+  listener(
+    { data: "[{ \"start\": \"2015-10-26T12:00:00Z\", " +
+            "     \"end\": \"2015-10-26T14:00:00Z\", " +
+            "    \"type\": \"busy\" }," +
+            " { \"start\": \"2015-10-26T15:00:00Z\", " +
+            "     \"end\": \"2015-10-26T16:00:00Z\", " +
+            "    \"type\": \"tentative\" }]",
+      isError: false,
+      errorMessage: null }
+  );
+}
+
+var Request = {
+  getFreebusy: getFreebusy
+};
+
+EXPORTED_SYMBOLS = [
+  'Request'
+];
