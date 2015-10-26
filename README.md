@@ -1,1 +1,1 @@
-# mozilla-freebusy
+# Mozilla free/busy provider
