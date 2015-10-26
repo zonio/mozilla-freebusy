@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>freebusy@zonio.net</em:id>
+    <em:name>Free/busy provider</em:name>
+    <em:description>Enables free/busy information discovery from various calendar services.</em:description>
+    <em:version>1.0</em:version>
+    <em:creator>Zonio</em:creator>
+    <em:type>2</em:type>
+    <em:bootstrap>false</em:bootstrap>
+    <em:unpack>false</em:unpack>
+    <em:homepageURL>https://www.zonio.net/</em:homepageURL>
+
+    <em:targetApplication>
+      <Description>
+        <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
+        <em:minVersion>38.0</em:minVersion>
+        <em:maxVersion>38.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <em:requires>
+      <Description>
+        <em:id>{e2fda1a4-762b-4020-b5ad-a41df1933103}</em:id>
+        <em:minVersion>1.0</em:minVersion>
+        <em:maxVersion>4.*</em:maxVersion>
+      </Description>
+    </em:requires>
+
+  </Description>
+</RDF>
