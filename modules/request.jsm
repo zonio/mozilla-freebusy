@@ -32,10 +32,10 @@ function getFreebusy(attendee, start, end, listener) {
   );
 }
 
-var Request = {
+var zonioRequest = {
   getFreebusy: getFreebusy
 };
 
 EXPORTED_SYMBOLS = [
-  'Request'
+  'zonioRequest'
 ];

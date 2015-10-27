@@ -78,7 +78,7 @@ function exportProperty(object, name, getter, setter) {
   Object.defineProperty(object, name, descriptor);
 }
 
-var cal3eObject = {
+var zonioObject = {
   asXpcom: asXpcom,
   asXpcomObserver: asXpcomObserver,
   exportMethod: exportMethod,
@@ -86,5 +86,5 @@ var cal3eObject = {
 };
 
 EXPORTED_SYMBOLS = [
-  'cal3eObject'
+  'zonioObject'
 ];

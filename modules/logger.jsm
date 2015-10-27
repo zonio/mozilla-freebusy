@@ -198,10 +198,10 @@ var LogDevices = {
   'dump': DumpLogDevice
 };
 
-var cal3eLogger = {
+var zonioLogger = {
   create: function(config) { return (new Builder(config)).createLogger() }
 };
 
 EXPORTED_SYMBOLS = [
-  'cal3eLogger'
+  'zonioLogger'
 ];
