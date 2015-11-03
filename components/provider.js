@@ -58,10 +58,11 @@ function zonioFreebusyProvider() {
   function getFreeBusyIntervals(calId, start, end, busyTypes, listener) {
     var clientListener = function calEee_getFreeBusy_onResult(result) {
       if (result.isError) {
-        log.warn('Cannot retrieve free/busy for "' + attendee + '".'  +
+        log.warn('Cannot retrieve free/busy for "' + attendee + '". '  +
                     result.errorMessage);
         return;
       }
+
 
       log.info('Free/busy received');
 

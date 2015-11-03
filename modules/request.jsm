@@ -17,7 +17,99 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+
 var HOST = 'isfreebusy.info:444';
+
+function ChannelCallbacks(repeatCall, onError) {
+  var channelCallbacks = this;
+  var badCertListener;
+
+  function getInterface(iid, result) {
+    if (!iid.equals(Components.interfaces.nsIBadCertListener2)) {
+      throw Components.Exception(
+        'Given interface is not supported',
+        Components.results.NS_ERROR_NO_INTERFACE
+      );
+    }
+
+    return badCertListener;
+  }
+
+  function isActive() {
+    return badCertListener.isActive();
+  }
+
+  function init() {
+    badCertListener = new BadCertListener(repeatCall, onError);
+  }
+
+  channelCallbacks.QueryInterface = XPCOMUtils.generateQI([
+    Components.interfaces.nsIInterfaceRequestor
+  ]);
+  channelCallbacks.getInterface = getInterface;
+  channelCallbacks.isActive = isActive;
+
+  init();
+}
+
+function BadCertListener(repeatCall, onError) {
+  var badCertListener = this;
+  var window;
+  var active;
+
+  function notifyCertProblem(socketInfo, status, targetSite) {
+    if (active) {
+      return;
+    }
+
+    active = true;
+    window.setTimeout(function() {
+      showBadCertDialogAndRetryCall({
+        'exceptionAdded': false,
+        'prefetchCert': true,
+        'location': targetSite
+      });
+    }, 0);
+  }
+
+  function showBadCertDialogAndRetryCall(parameters) {
+    window.openDialog(
+      'chrome://pippki/content/exceptionDialog.xul',
+      '',
+      'chrome,centerscreen,modal',
+      parameters
+    );
+
+    active = false;
+    if (parameters['exceptionAdded']) {
+      repeatCall();
+    } else {
+      onError(Components.Exception(
+        'Server certificate exception not added',
+        Components.results.NS_ERROR_FAILURE
+      ));
+    }
+  }
+
+  function isActive() {
+    return active;
+  }
+
+  function init() {
+    window = Services.wm.getMostRecentWindow(null);
+    active = false;
+  }
+
+  badCertListener.QueryInterface = XPCOMUtils.generateQI([
+    Components.interfaces.nsIInterfaceRequestor
+  ]);
+  badCertListener.notifyCertProblem = notifyCertProblem;
+  badCertListener.isActive = isActive;
+
+  init();
+}
 
 function getFreebusy(attendee, start, end, listener) {
   function onResponse(event) {
@@ -29,22 +121,50 @@ function getFreebusy(attendee, start, end, listener) {
   }
 
   function onError(event) {
+    if (channelCallbacks.isActive()) {
+      return;
+    }
     listener(errorResult('Transport error'));
   }
 
-  var xhr = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1']
-    .createInstance(Components.interfaces.nsIXMLHttpRequest);
-
-  xhr.open('GET', buildUrl(HOST, attendee, start, end));
-  xhr.addEventListener('load', onResponse, false);
-  xhr.addEventListener('error', onError, false);
-  xhr.setRequestHeader('User-Agent', 'Mozilla Freebusy Provider');
-  xhr.setRequestHeader('Accept', 'application/json');
-  try {
-    xhr.send();
-  } catch (e) {
-    dump("[fb] Exception: " + e);
+  function onCertError(exception) {
+    listener(errorResult(exception.message));
   }
+
+  function performRequest() {
+    var channelCallbacks = new ChannelCallbacks(performRequest, onCertError);
+
+    var xhr = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1']
+      .createInstance(Components.interfaces.nsIXMLHttpRequest);
+
+    xhr.open('GET', buildUrl(HOST, attendee, start, end));
+    xhr.addEventListener('load', function(event) {
+      if (event.target.status == 200) {
+        listener(successResult(event.target.responseText));
+      } else {
+        listener(errorResult(event.target.responseText));
+      }
+    }, false);
+    xhr.addEventListener('error', function(event) {
+      if (channelCallbacks.isActive()) {
+        return;
+      }
+
+      listener(errorResult('Transport error'));
+    }, false);
+    xhr.setRequestHeader('User-Agent', 'Mozilla Freebusy Provider');
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.channel.notificationCallbacks = channelCallbacks;
+
+    try {
+      xhr.send();
+    } catch (e) {
+      listener(errorResult(e.message));
+      return;
+    }
+  }
+
+  performRequest();
 }
 
 function buildUrl(host, attendee, start, end) {
