@@ -17,19 +17,53 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-Components.utils.import('resource://gre/modules/Services.jsm');
+var HOST = 'isfreebusy.info:444';
 
 function getFreebusy(attendee, start, end, listener) {
-  listener(
-    { data: "[{ \"start\": \"2015-10-26T12:00:00Z\", " +
-            "     \"end\": \"2015-10-26T14:00:00Z\", " +
-            "    \"type\": \"busy\" }," +
-            " { \"start\": \"2015-10-26T15:00:00Z\", " +
-            "     \"end\": \"2015-10-26T16:00:00Z\", " +
-            "    \"type\": \"tentative\" }]",
-      isError: false,
-      errorMessage: null }
-  );
+  function onResponse(event) {
+    if (event.target.status == 200) {
+      listener(successResult(event.target.responseText));
+    } else {
+      listener(errorResult(event.target.responseText));
+    }
+  }
+
+  function onError(event) {
+    listener(errorResult('Transport error'));
+  }
+
+  var xhr = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1']
+    .createInstance(Components.interfaces.nsIXMLHttpRequest);
+
+  xhr.open('GET', buildUrl(HOST, attendee, start, end));
+  xhr.addEventListener('load', onResponse, false);
+  xhr.addEventListener('error', onError, false);
+  xhr.setRequestHeader('User-Agent', 'Mozilla Freebusy Provider');
+  xhr.setRequestHeader('Accept', 'application/json');
+  try {
+    xhr.send();
+  } catch (e) {
+    dump("[fb] Exception: " + e);
+  }
+}
+
+function buildUrl(host, attendee, start, end) {
+  return 'https://' + host + '/freebusy/' + encodeURIComponent(attendee) +
+         '?start=' + start + '&end=' + end;
+}
+
+function successResult(responseText) {
+  return buildResult(responseText, null);
+}
+
+function errorResult(errorText) {
+  return buildResult(null, errorText);
+}
+
+function buildResult(responseText, errorText) {
+  return { data: responseText,
+           isError: (responseText == null),
+           errorMessage: errorText };
 }
 
 var zonioRequest = {

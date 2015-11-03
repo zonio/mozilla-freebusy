@@ -91,7 +91,12 @@ function zonioFreebusyProvider() {
       return;
     }
 
-    zonioRequest.getFreebusy(attendee, start, end, clientListener);
+    zonioRequest.getFreebusy(
+      attendee,
+      asEpochTime(start),
+      asEpochTime(end),
+      clientListener
+    );
 
     log.info('Retriving free/busy for "' + attendee + '".');
   }
@@ -116,6 +121,10 @@ function zonioFreebusyProvider() {
     });
 
     return intervals;
+  }
+
+  function asEpochTime(datetime) {
+    return datetime.nativeTime / 1000000;
   }
 
   function init() {
