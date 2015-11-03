@@ -13,6 +13,7 @@
     <em:bootstrap>false</em:bootstrap>
     <em:unpack>false</em:unpack>
     <em:homepageURL>https://www.zonio.net/</em:homepageURL>
+    <em:iconURL>chrome://zoniofreebusy/skin/icon.png</em:iconURL>
 
     <em:targetApplication>
       <Description>
