@@ -21,9 +21,9 @@ Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://calendar/modules/calUtils.jsm');
 Components.utils.import('resource://calendar/modules/calIteratorUtils.jsm');
 Components.utils.import('resource://calendar/modules/calProviderUtils.jsm');
-Components.utils.import('resource://freebusymodules/logger.jsm');
-Components.utils.import('resource://freebusymodules/request.jsm');
-Components.utils.import('resource://freebusymodules/object.jsm');
+Components.utils.import('resource://zoniofreebusy/modules/logger.jsm');
+Components.utils.import('resource://zoniofreebusy/modules/request.jsm');
+Components.utils.import('resource://zoniofreebusy/modules/object.jsm');
 
 function zonioFreebusyProvider() {
   var freebusyProvider = this;

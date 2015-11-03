@@ -1,5 +1,5 @@
 content  zoniofreebusy           chrome/content/
-resource freebusymodules         modules/
+resource zoniofreebusy           ./
 locale   zoniofreebusy   en-US   chrome/locale/en-US/
 locale   zoniofreebusy   cs      chrome/locale/cs/
 skin     zoniofreebusy   classic chrome/skin/
