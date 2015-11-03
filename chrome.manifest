@@ -1,5 +1,7 @@
-content zoniofreebusy chrome/content/
-resource freebusymodules modules/
+content  zoniofreebusy         chrome/content/
+resource freebusymodules       modules/
+locale   zoniofreebusy   en-US chrome/locale/en-US/
+locale   zoniofreebusy   cs    chrome/locale/cs/
 
 component {2378ee03-7b47-4ae5-9f11-4c41d2ac0b50} components/provider.js
 contract @zonio.net/freebusy/provider;1 {2378ee03-7b47-4ae5-9f11-4c41d2ac0b50}
