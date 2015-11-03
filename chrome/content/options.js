@@ -17,9 +17,19 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-pref('extensions.zonio.freebusy.log.logDevice', 'console');
-pref('extensions.zonio.freebusy.log.severity', 'warn');
-pref('extensions.zonio.freebusy.log.name', 'zonio.freebusy');
+function onServiceTypeClick(event) {
+  var serviceTypeRadiogroup = document
+    .getElementById('zoniofreebusy-pref-radiogroup-service');
 
-pref('extensions.zonio.freebusy.pref.serviceType', 'isfreebusy.info');
-pref('extensions.zonio.freebusy.pref.exchangeHost', 'example.org:8080');
+  document
+    .getElementById('zoniofreebusy-pref-textbox-exchange-host')
+    .disabled = (serviceTypeRadiogroup['value'] != 'exchange');
+};
+
+zoniofreebusyOptionsOnLoad = function zoniofreebusyOption_onLoad() {
+  document
+    .getElementById('zoniofreebusy-pref-radiogroup-service')
+    .addEventListener('click', onServiceTypeClick, false);
+
+  onServiceTypeClick(null);
+};

@@ -30,5 +30,7 @@
       </Description>
     </em:requires>
 
+    <em:optionsURL>chrome://zoniofreebusy/content/options.xul</em:optionsURL>
   </Description>
+
 </RDF>

@@ -20,8 +20,6 @@
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-var HOST = 'isfreebusy.info:444';
-
 function ChannelCallbacks(repeatCall, onError) {
   var channelCallbacks = this;
   var badCertListener;
@@ -137,7 +135,7 @@ function getFreebusy(attendee, start, end, listener) {
     var xhr = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1']
       .createInstance(Components.interfaces.nsIXMLHttpRequest);
 
-    xhr.open('GET', buildUrl(HOST, attendee, start, end));
+    xhr.open('GET', buildUrl(attendee, start, end));
     xhr.addEventListener('load', function(event) {
       if (event.target.status == 200) {
         listener(successResult(event.target.responseText));
@@ -167,7 +165,14 @@ function getFreebusy(attendee, start, end, listener) {
   performRequest();
 }
 
-function buildUrl(host, attendee, start, end) {
+function buildUrl(attendee, start, end) {
+  var HOSTS = {
+    'isfreebusy.info' : 'isfreebusy.info:444',
+    'exchange': getPref('exchangeHost')
+  };
+
+  var host = HOSTS[getPref('serviceType')];
+
   return 'https://' + host + '/freebusy/' + encodeURIComponent(attendee) +
          '?start=' + start + '&end=' + end;
 }
@@ -184,6 +189,10 @@ function buildResult(responseText, errorText) {
   return { data: responseText,
            isError: (responseText == null),
            errorMessage: errorText };
+}
+
+function getPref(key) {
+  return Services.prefs.getCharPref('extensions.zonio.freebusy.pref.' + key);
 }
 
 var zonioRequest = {

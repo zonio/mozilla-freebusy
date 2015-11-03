@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Zonio Freebusy
+   - Copyright © 2015 Zonio s.r.o.
+   -
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   -
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU General Public License for more details.
+   -
+   - You should have received a copy of the GNU General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<prefwindow
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="zoniofreebusy-prefs"
+  title="Freebusy Options"
+  onload="zoniofreebusyOptionsOnLoad();">
+
+   <script type="application/javascript"
+           src="chrome://zoniofreebusy/content/options.js"/>
+
+   <prefpane
+     id="zoniofreebusy-options-pane" label="Service">
+     <preferences>
+        <preference
+          id="zoniofreebusy-pref-service"
+          name="extensions.zonio.freebusy.pref.serviceType"
+          type="string"/>
+        <preference
+          id="zoniofreebusy-pref-exchange-host"
+          name="extensions.zonio.freebusy.pref.exchangeHost"
+          type="string"/>
+     </preferences>
+
+     <vbox>
+        <label
+          value="Service Type:"
+          control="zoniofreebusy-pref-radiogroup-service"/>
+        <radiogroup
+            id="zoniofreebusy-pref-radiogroup-service"
+            preference="zoniofreebusy-pref-service">
+          <radio
+            id="zoniofreebusy-pref-radio-service-fbinfo"
+            label="isfreebusy.info"
+            value="isfreebusy.info"
+            selected="true"/>
+          <radio
+            id="zoniofreebusy-pref-radio-service-exchange"
+            label="exchange"
+            value="exchange"/>
+        </radiogroup>
+        <hbox>
+           <separator orient="vertical"/>
+           <textbox
+              id="zoniofreebusy-pref-textbox-exchange-host"
+              preference="zoniofreebusy-pref-exchange-host"
+              value="example.org:8080"/>
+        </hbox>
+      </vbox>
+   </prefpane>
+</prefwindow>
