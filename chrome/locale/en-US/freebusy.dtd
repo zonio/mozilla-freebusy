@@ -19,3 +19,5 @@
 
 <!ENTITY zonio.freebusy.options.title "Freebusy Options">
 <!ENTITY zonio.freebusy.options.serviceType "Service Type">
+<!ENTITY zonio.freebusy.options.service.isfreebusy "isfreebusy.info">
+<!ENTITY zonio.freebusy.options.service.exchange "exchange">

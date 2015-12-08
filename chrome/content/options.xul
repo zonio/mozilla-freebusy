@@ -24,14 +24,13 @@
 <prefwindow
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   id="zoniofreebusy-prefs"
-  title="&zonio.freebusy.options.title;"
   onload="zoniofreebusyOptionsOnLoad();">
 
    <script type="application/javascript"
            src="chrome://zoniofreebusy/content/options.js"/>
 
    <prefpane
-     id="zoniofreebusy-options-pane" label="Service">
+     id="zoniofreebusy-options-pane" label="&zonio.freebusy.options.title;">
      <preferences>
         <preference
           id="zoniofreebusy-pref-service"
@@ -52,12 +51,12 @@
             preference="zoniofreebusy-pref-service">
           <radio
             id="zoniofreebusy-pref-radio-service-fbinfo"
-            label="isfreebusy.info"
+            label="&zonio.freebusy.options.service.isfreebusy;"
             value="isfreebusy.info"
             selected="true"/>
           <radio
             id="zoniofreebusy-pref-radio-service-exchange"
-            label="exchange"
+            label="&zonio.freebusy.options.service.exchange;"
             value="exchange"/>
         </radiogroup>
         <hbox>
