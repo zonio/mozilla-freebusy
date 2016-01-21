@@ -5,14 +5,14 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>freebusy@zonio.net</em:id>
-    <em:name>Free/busy provider</em:name>
-    <em:description>Enables free/busy information discovery from various calendar services.</em:description>
+    <em:name>Zonio Freebusy for Lightning</em:name>
+    <em:description>Finds when are people available for a meeting or event via Zonio Freebusy service. Displays freebusy blocks instantly in Invite Attendees window while attendees are being added. Works with both local calendar storage or any calendar provider.</em:description>
     <em:version>1.0</em:version>
     <em:creator>Zonio</em:creator>
     <em:type>2</em:type>
     <em:bootstrap>false</em:bootstrap>
     <em:unpack>false</em:unpack>
-    <em:homepageURL>https://www.zonio.net/</em:homepageURL>
+    <em:homepageURL>https://zonio.net/</em:homepageURL>
     <em:iconURL>chrome://zoniofreebusy/skin/icon.png</em:iconURL>
 
     <em:targetApplication>

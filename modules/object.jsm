@@ -1,6 +1,6 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * Zonio Freebusy
- * Copyright © 2015 Zonio s.r.o.
+ * Zonio Freebusy for Lightning
+ * Copyright © 2016 Zonio s.r.o.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

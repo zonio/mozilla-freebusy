@@ -1,1 +1,1 @@
-# Mozilla free/busy provider
+# Zonio Freebusy for Lightning
