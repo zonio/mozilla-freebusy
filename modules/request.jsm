@@ -17,8 +17,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 
 function ChannelCallbacks(repeatCall, onError) {
   var channelCallbacks = this;
@@ -132,8 +132,7 @@ function getFreebusy(attendee, start, end, listener) {
   function performRequest() {
     var channelCallbacks = new ChannelCallbacks(performRequest, onCertError);
 
-    var xhr = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1']
-      .createInstance(Components.interfaces.nsIXMLHttpRequest);
+    var xhr = new XMLHttpRequest();
 
     xhr.open('GET', buildUrl(attendee, start, end));
     xhr.addEventListener('load', function(event) {

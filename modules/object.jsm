@@ -17,7 +17,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
 
 function asXpcom(constructor, classInfoDefinition, categories) {
   if (!classInfoDefinition.interfaces) {
