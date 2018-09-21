@@ -19,6 +19,7 @@
 
 ChromeUtils.import("resource://gre/modules/Services.jsm");
 ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.importGlobalProperties(["XMLHttpRequest"]);
 
 function ChannelCallbacks(repeatCall, onError) {
   var channelCallbacks = this;
@@ -198,6 +199,6 @@ var zonioRequest = {
   getFreebusy: getFreebusy
 };
 
-EXPORTED_SYMBOLS = [
+const EXPORTED_SYMBOLS = [
   'zonioRequest'
 ];

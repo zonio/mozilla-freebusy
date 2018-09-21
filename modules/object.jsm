@@ -85,6 +85,6 @@ var zonioObject = {
   exportProperty: exportProperty
 };
 
-EXPORTED_SYMBOLS = [
+const EXPORTED_SYMBOLS = [
   'zonioObject'
 ];

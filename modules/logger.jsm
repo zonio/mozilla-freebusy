@@ -42,12 +42,13 @@ function Logger(logDevice) {
   }
 
   function createLogFunction(severity) {
-    var logFunction = function(message) {
-      return log(severity, message, defaultName);
-    }
-    logFunction.name = severity.toLowerCase();
+    var nameInferenceObj = {
+      [severity](message) {
+        return log(severity, message, defaultName);
+      }
+    };
 
-    return logFunction;
+    return nameInferenceObj[severity];
   }
 
   var debug = createLogFunction('DEBUG');
@@ -202,6 +203,6 @@ var zonioLogger = {
   create: function(config) { return (new Builder(config)).createLogger() }
 };
 
-EXPORTED_SYMBOLS = [
+const EXPORTED_SYMBOLS = [
   'zonioLogger'
 ];
