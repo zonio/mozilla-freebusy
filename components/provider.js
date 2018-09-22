@@ -77,8 +77,8 @@ function zonioFreebusyProvider() {
       intervalsToReturn.forEach(function(interval, idx) {
         log.debug('Interval #' + idx + ': ' + interval.calId +
                      ' is ' + MOZ_TO_JSON_TYPES[interval.freeBusyType] +
-                     ' from ' + cal.toRFC3339(interval.interval.start) +
-                     ' to ' + cal.toRFC3339(interval.interval.end));
+                     ' from ' + cal.dtz.toRFC3339(interval.interval.start) +
+                     ' to ' + cal.dtz.toRFC3339(interval.interval.end));
       });
 
       listener.onResult(null, intervalsToReturn);
@@ -111,11 +111,11 @@ function zonioFreebusyProvider() {
     var intervals = [];
 
     JSON.parse(json).forEach(function(jsonInterval) {
-      intervals.push(new cal.FreeBusyInterval(
+      intervals.push(new cal.provider.FreeBusyInterval(
         calId,
         JSON_TO_MOZ_TYPES[jsonInterval['type']],
-        cal.fromRFC3339(jsonInterval['start']),
-        cal.fromRFC3339(jsonInterval['end'])
+        cal.dtz.fromRFC3339(jsonInterval['start']),
+        cal.dtz.fromRFC3339(jsonInterval['end'])
       ))
     });
 
