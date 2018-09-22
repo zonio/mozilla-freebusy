@@ -131,8 +131,6 @@ function getFreebusy(attendee, start, end, listener) {
   }
 
   function performRequest() {
-    var channelCallbacks = new ChannelCallbacks(performRequest, onCertError);
-
     var xhr = new XMLHttpRequest();
 
     xhr.open('GET', buildUrl(attendee, start, end));
@@ -162,6 +160,7 @@ function getFreebusy(attendee, start, end, listener) {
     }
   }
 
+  var channelCallbacks = new ChannelCallbacks(performRequest, onCertError);
   performRequest();
 }
 
