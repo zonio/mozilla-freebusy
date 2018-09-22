@@ -19,9 +19,9 @@
 
 ChromeUtils.import('resource://gre/modules/Services.jsm');
 ChromeUtils.import('resource://calendar/modules/calUtils.jsm');
-ChromeUtils.import('resource://zoniofreebusy/modules/logger.jsm');
-ChromeUtils.import('resource://zoniofreebusy/modules/request.jsm');
-ChromeUtils.import('resource://zoniofreebusy/modules/object.jsm');
+ChromeUtils.import('resource://zonio-freebusy/modules/logger.jsm');
+ChromeUtils.import('resource://zonio-freebusy/modules/request.jsm');
+ChromeUtils.import('resource://zonio-freebusy/modules/object.jsm');
 
 function zonioFreebusyProvider() {
   var freebusyProvider = this;

@@ -19,16 +19,16 @@
 
 function onServiceTypeClick(event) {
   var serviceTypeRadiogroup = document
-    .getElementById('zoniofreebusy-pref-radiogroup-service');
+    .getElementById('zonio-freebusy-pref-radiogroup-service');
 
   document
-    .getElementById('zoniofreebusy-pref-textbox-exchange-host')
+    .getElementById('zonio-freebusy-pref-textbox-exchange-host')
     .disabled = (serviceTypeRadiogroup['value'] != 'exchange');
 };
 
 zoniofreebusyOptionsOnLoad = function zoniofreebusyOption_onLoad() {
   document
-    .getElementById('zoniofreebusy-pref-radiogroup-service')
+    .getElementById('zonio-freebusy-pref-radiogroup-service')
     .addEventListener('click', onServiceTypeClick, false);
 
   onServiceTypeClick(null);

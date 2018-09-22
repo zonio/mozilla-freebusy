@@ -19,25 +19,25 @@
    - ***** END LICENSE BLOCK ***** -->
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://zoniofreebusy/locale/freebusy.dtd">
+<!DOCTYPE window SYSTEM "chrome://zonio-freebusy/locale/freebusy.dtd">
 
 <prefwindow
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  id="zoniofreebusy-prefs"
+  id="zonio-freebusy-prefs"
   onload="zoniofreebusyOptionsOnLoad();">
 
    <script type="application/javascript"
-           src="chrome://zoniofreebusy/content/options.js"/>
+           src="chrome://zonio-freebusy/content/options.js"/>
 
    <prefpane
-     id="zoniofreebusy-options-pane" label="&zonio.freebusy.options.title;">
+     id="zonio-freebusy-options-pane" label="&zonio.freebusy.options.title;">
      <preferences>
         <preference
-          id="zoniofreebusy-pref-service"
+          id="zonio-freebusy-pref-service"
           name="extensions.zonio.freebusy.pref.serviceType"
           type="string"/>
         <preference
-          id="zoniofreebusy-pref-exchange-host"
+          id="zonio-freebusy-pref-exchange-host"
           name="extensions.zonio.freebusy.pref.exchangeHost"
           type="string"/>
      </preferences>
@@ -45,25 +45,25 @@
      <vbox>
         <label
           value="&zonio.freebusy.options.serviceType;"
-          control="zoniofreebusy-pref-radiogroup-service"/>
+          control="zonio-freebusy-pref-radiogroup-service"/>
         <radiogroup
-            id="zoniofreebusy-pref-radiogroup-service"
-            preference="zoniofreebusy-pref-service">
+            id="zonio-freebusy-pref-radiogroup-service"
+            preference="zonio-freebusy-pref-service">
           <radio
-            id="zoniofreebusy-pref-radio-service-fbinfo"
+            id="zonio-freebusy-pref-radio-service-fbinfo"
             label="&zonio.freebusy.options.service.isfreebusy;"
             value="isfreebusy.info"
             selected="true"/>
           <radio
-            id="zoniofreebusy-pref-radio-service-exchange"
+            id="zonio-freebusy-pref-radio-service-exchange"
             label="&zonio.freebusy.options.service.exchange;"
             value="exchange"/>
         </radiogroup>
         <hbox>
            <separator orient="vertical"/>
            <textbox
-              id="zoniofreebusy-pref-textbox-exchange-host"
-              preference="zoniofreebusy-pref-exchange-host"
+              id="zonio-freebusy-pref-textbox-exchange-host"
+              preference="zonio-freebusy-pref-exchange-host"
               value="example.org:8080"/>
         </hbox>
       </vbox>

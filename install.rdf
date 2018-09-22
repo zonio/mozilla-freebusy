@@ -13,7 +13,7 @@
     <em:bootstrap>false</em:bootstrap>
     <em:unpack>false</em:unpack>
     <em:homepageURL>https://zonio.net/</em:homepageURL>
-    <em:iconURL>chrome://zoniofreebusy/skin/icon.png</em:iconURL>
+    <em:iconURL>chrome://zonio-freebusy/skin/icon.png</em:iconURL>
 
     <em:targetApplication>
       <Description>
@@ -31,7 +31,7 @@
       </Description>
     </em:requires>
 
-    <em:optionsURL>chrome://zoniofreebusy/content/options.xul</em:optionsURL>
+    <em:optionsURL>chrome://zonio-freebusy/content/options.xul</em:optionsURL>
   </Description>
 
 </RDF>
