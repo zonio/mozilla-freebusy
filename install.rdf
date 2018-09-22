@@ -7,7 +7,7 @@
     <em:id>freebusy@zonio.net</em:id>
     <em:name>Zonio Freebusy for Lightning</em:name>
     <em:description>Finds when are people available for a meeting or event via Zonio Freebusy service. Displays freebusy blocks instantly in Invite Attendees window while attendees are being added. Works with both local calendar storage or any calendar provider.</em:description>
-    <em:version>1.0</em:version>
+    <em:version>1.0.3</em:version>
     <em:creator>Zonio</em:creator>
     <em:type>2</em:type>
     <em:bootstrap>false</em:bootstrap>
